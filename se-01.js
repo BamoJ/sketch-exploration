@@ -9,11 +9,9 @@ const settings = {
 	suffix: seed,
 	dimensions: [2048, 2048],
 	pixelsPerInch: 300,
-	name: `se-${seed}`,
 }
 const sketch = ({ context, width, height }) => {
 	const ctx = context
-	random.setSeed(222)
 
 	const colorCount = random.rangeFloor(1, 6)
 	const palette = random
@@ -62,8 +60,8 @@ const sketch = ({ context, width, height }) => {
 			// ctx.fillStyle = color
 			// ctx.fill()
 			ctx.fillStyle = color
-			ctx.font = `${radius * width}px "Helvetica"`
-			ctx.translate(x - 25, y)
+			ctx.font = `${radius * width}px "serif"`
+			ctx.translate(x, y)
 			ctx.rotate(rotation)
 			ctx.fillText('—', 0, 0)
 			ctx.restore()
