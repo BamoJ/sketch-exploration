@@ -57,7 +57,7 @@ const sketch = ({ context }) => {
 
 	const palette = random.pick(palettes, seed)
 
-	const num = 100
+	const num = 1000
 
 	for (let i = 0; i < num; i++) {
 		const material = new THREE.ShaderMaterial({
