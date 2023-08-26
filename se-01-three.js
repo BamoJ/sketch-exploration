@@ -8,6 +8,10 @@ const canvasSketch = require('canvas-sketch')
 const random = require('canvas-sketch-util/random')
 const { lerp } = require('canvas-sketch-util/math')
 const palettes = require('nice-color-palettes')
+const eases = require('eases')
+const bezierEasing = require('bezier-easing')
+const vertex = require('./shaders/vertex.glsl')
+const fragment = require('./shaders/fragment.glsl')
 
 const seed = random.getRandomSeed()
 
@@ -16,7 +20,7 @@ const settings = {
 	animate: true,
 	fps: 60,
 	dimensions: [1080, 1080],
-	duration: 4,
+	duration: 5,
 	// Get a WebGL canvas rather than 2D
 	context: 'webgl',
 	// Turn on MSAA
@@ -53,15 +57,12 @@ const sketch = ({ context }) => {
 
 	const palette = random.pick(palettes, seed)
 
-	const num = 30
+	const num = 100
 
 	for (let i = 0; i < num; i++) {
-		const material = new THREE.MeshPhongMaterial({
-			color: random.pick(palette),
-			flatShading: false,
-			reflectivity: 10,
-			shininess: 100,
-			refractionRatio: 0.85,
+		const material = new THREE.ShaderMaterial({
+			vertexShader: vertex,
+			fragmentShader: fragment,
 		})
 		const mesh = new THREE.Mesh(geometry, material)
 
@@ -71,9 +72,9 @@ const sketch = ({ context }) => {
 			random.range(-1, 1),
 		)
 		mesh.scale.set(
-			random.range(-0.5, 0.5),
-			random.range(-0.5, 0.5),
-			random.range(-0.5, 0.5),
+			random.range(-1, 1),
+			random.range(-2.5, 2.5),
+			random.range(0, 2),
 		),
 			scene.add(mesh)
 	}
@@ -81,17 +82,16 @@ const sketch = ({ context }) => {
 	// setup a light
 
 	// Directional light
-	const dLight = new THREE.DirectionalLight('white', 1)
-	dLight.position.set(0, 4, Math.PI * 2)
-
-	// point light
-	// const pLight = new THREE.PointLight('#45caf7', 1, 15.5)
-	// pLight.position.set(2, 2, 4).multiplyScalar(1.5)
+	const dLight = new THREE.DirectionalLight('white', 2)
+	dLight.position.set(0, 3, 4)
 
 	// ambient light
-	const aLight = new THREE.AmbientLight('hsl(0, 0%, 20%)')
+	const aLight = new THREE.AmbientLight('red', 0.5)
 
-	scene.add(dLight, aLight)
+	scene.add(aLight, dLight)
+
+	// easing function
+	const ease = bezierEasing(0.73, -0.01, 0.12, 0.99)
 
 	// draw each frame
 	return {
@@ -104,7 +104,7 @@ const sketch = ({ context }) => {
 			const aspect = viewportWidth / viewportHeight
 
 			// Orthographic camera zoom
-			const zoom = 1.9
+			const zoom = 2
 
 			// Camera Bounds
 			camera.left = -zoom * aspect
@@ -118,17 +118,18 @@ const sketch = ({ context }) => {
 
 			// Set camera position and look at scene
 			camera.position.set(zoom, zoom, zoom)
-			camera.lookAt(new THREE.Vector3())
+			camera.lookAt(new THREE.Vector3(0, 0, 0))
 
 			// Update the camera
 			camera.updateProjectionMatrix()
 		},
 
 		// Update & render your scene here
-		render({ time }) {
+		render({ time, playhead }) {
 			// controls.update()
 			renderer.render(scene, camera)
-			scene.rotation.y = time * 0.1
+			const t = Math.sin(playhead * Math.PI)
+			scene.rotation.z = ease(t)
 		},
 
 		// Dispose of events & renderer for cleaner hot-reloading
