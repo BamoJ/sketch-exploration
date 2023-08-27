@@ -17,6 +17,7 @@ const frag = shaders
 const sketch = ({ gl }) => {
 	// Create the shader and return it
 	return createShader({
+		clearColor: 'white',
 		// Pass along WebGL context
 		gl,
 		// Specify fragment and/or vertex shader strings
@@ -25,6 +26,7 @@ const sketch = ({ gl }) => {
 		uniforms: {
 			// Expose props from canvas-sketch
 			time: ({ time }) => time,
+			aspect: ({ width, height }) => width / height,
 		},
 	})
 }

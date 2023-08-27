@@ -6,12 +6,11 @@ require('three/examples/js/controls/OrbitControls')
 
 const canvasSketch = require('canvas-sketch')
 const random = require('canvas-sketch-util/random')
-const { lerp } = require('canvas-sketch-util/math')
 const palettes = require('nice-color-palettes')
 const eases = require('eases')
 const bezierEasing = require('bezier-easing')
 const vertex = require('./shaders/vertex.glsl')
-const fragment = require('./shaders/fragment.glsl')
+const fragment = require('./shaders/fragmentO.glsl')
 
 const seed = random.getRandomSeed()
 
@@ -19,8 +18,6 @@ const settings = {
 	// Make the loop animated
 	animate: true,
 	fps: 60,
-	dimensions: [1080, 1080],
-	duration: 5,
 	// Get a WebGL canvas rather than 2D
 	context: 'webgl',
 	// Turn on MSAA
@@ -29,6 +26,8 @@ const settings = {
 		powerPreference: 'high-performance',
 	},
 	suffix: seed,
+
+	dimensions: [2048, 2048],
 }
 
 const sketch = ({ context }) => {
@@ -38,7 +37,7 @@ const sketch = ({ context }) => {
 	})
 
 	// WebGL background color
-	renderer.setClearColor('#ffffff', 1)
+	renderer.setClearColor('#white', 1)
 
 	// Setup a camera
 	const camera = new THREE.OrthographicCamera()
@@ -57,26 +56,35 @@ const sketch = ({ context }) => {
 
 	const palette = random.pick(palettes, seed)
 
-	const num = 1000
+	const num = 600
+
+	const meshes = []
 
 	for (let i = 0; i < num; i++) {
 		const material = new THREE.ShaderMaterial({
 			vertexShader: vertex,
 			fragmentShader: fragment,
+			uniforms: {
+				time: { value: 0 },
+			},
 		})
+
 		const mesh = new THREE.Mesh(geometry, material)
 
 		mesh.position.set(
-			random.range(-1, 1),
-			random.range(-1, 1),
+			random.range(-2, 2),
+			random.range(-3, 3),
 			random.range(-1, 1),
 		)
+
 		mesh.scale.set(
 			random.range(-1, 1),
-			random.range(-2.5, 2.5),
-			random.range(0, 2),
+			random.range(-1, 1),
+			random.range(-1, 1),
 		),
-			scene.add(mesh)
+			mesh.scale.multiplyScalar(1)
+		scene.add(mesh)
+		meshes.push(mesh)
 	}
 
 	// setup a light
@@ -91,7 +99,7 @@ const sketch = ({ context }) => {
 	scene.add(aLight, dLight)
 
 	// easing function
-	const ease = bezierEasing(0.73, -0.01, 0.12, 0.99)
+	const ease = bezierEasing(0.93, -0.01, 0.122, 0.99)
 
 	// draw each frame
 	return {
@@ -127,9 +135,14 @@ const sketch = ({ context }) => {
 		// Update & render your scene here
 		render({ time, playhead }) {
 			// controls.update()
+			meshes.forEach((mesh) => {
+				const t = Math.sin(playhead)
+				mesh.material.uniforms.time.value = time
+
+				mesh.scale.y = Math.sin(ease(t)) * 10
+			})
+
 			renderer.render(scene, camera)
-			const t = Math.sin(playhead * Math.PI)
-			scene.rotation.z = ease(t)
 		},
 
 		// Dispose of events & renderer for cleaner hot-reloading

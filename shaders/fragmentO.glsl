@@ -1,5 +1,4 @@
 precision highp float;
-uniform sampler2D texture;
 uniform float time;
 varying vec2 vUv;
 uniform float aspect;
@@ -15,10 +14,15 @@ void main() {
   float dist = length(uvCenter);
 
   // Use smoothstep to smooth the transition between colors
-  float alpha = smoothstep(0.25, 0.247, dist);
+  float alpha = smoothstep(0.002, 0.006, dist);
 
-  float noise = snoise(vec3(uvCenter * 0.5, time * 0.25));
-  vec3 color = hsl2rgb(0.36 + noise * 0.2, 0.5, 0.5);
+  float noise = snoise(vec3(uvCenter, time * 0.25));
+
+  vec3 color = hsl2rgb(2.5 + noise * 25.5, 0.55, 0.54);
+
+  for(int i = 0; i < 20; i++) {
+    color[i] *= smoothstep(1.0, 1.25, color[i]);
+  }
 
   gl_FragColor = vec4(vec3(color), alpha);
 }

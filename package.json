@@ -1,23 +1,25 @@
 {
-  "name": "workshop-generative-art",
-  "version": "1.0.0",
-  "description": "",
-  "main": "e-01.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "bezier-easing": "^2.1.0",
-    "canvas-sketch": "^0.7.7",
-    "canvas-sketch-cli": "^1.11.21",
-    "canvas-sketch-util": "^1.10.0",
-    "colormap": "^2.3.2",
-    "eases": "^1.0.8",
-    "nice-color-palettes": "^3.0.0",
-    "prettier": "^3.0.2",
-    "three": "^0.147.0"
-  }
+	"name": "workshop-generative-art",
+	"version": "1.0.0",
+	"description": "",
+	"main": "e-01.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"bezier-easing": "^2.1.0",
+		"canvas-sketch": "^0.7.7",
+		"canvas-sketch-cli": "^1.11.21",
+		"canvas-sketch-util": "^1.10.0",
+		"colormap": "^2.3.2",
+		"eases": "^1.0.8",
+		"glsl-hsl2rgb": "^1.1.0",
+		"glsl-noise": "^0.0.0",
+		"nice-color-palettes": "^3.0.0",
+		"prettier": "^3.0.2",
+		"three": "^0.147.0"
+	}
 }
