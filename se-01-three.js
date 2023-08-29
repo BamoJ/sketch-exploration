@@ -56,7 +56,7 @@ const sketch = ({ context }) => {
 
 	const palette = random.pick(palettes, seed)
 
-	const num = 600
+	const num = 50
 
 	const meshes = []
 

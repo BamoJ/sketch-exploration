@@ -14,15 +14,11 @@ void main() {
   float dist = length(uvCenter);
 
   // Use smoothstep to smooth the transition between colors
-  float alpha = smoothstep(0.002, 0.006, dist);
+  float alpha = smoothstep(0.01, 0.02, dist);
 
   float noise = snoise(vec3(uvCenter, time * 0.25));
 
-  vec3 color = hsl2rgb(2.5 + noise * 25.5, 0.55, 0.54);
-
-  for(int i = 0; i < 20; i++) {
-    color[i] *= smoothstep(1.0, 1.25, color[i]);
-  }
+  vec3 color = hsl2rgb(0.5 + noise * 0.65, 0.55, 0.54);
 
   gl_FragColor = vec4(vec3(color), alpha);
 }
